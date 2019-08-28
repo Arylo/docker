@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  db:
+    container_name: nextcloud_db
+    image: postgres:alpine
+    restart: always
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    env_file:
+      - db.env
+
+  app:
+    container_name: nextcloud
+    image: nextcloud:apache
+    restart: always
+    ports:
+      - 8080:80
+    volumes:
+      - ./nextcloud:/var/www/html
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=nextcloud
+    env_file:
+      - db.env
+    depends_on:
+      - db
+
+volumes:
+  db:
+  nextcloud:
